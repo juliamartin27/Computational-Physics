@@ -9,7 +9,7 @@ import scipy.integrate as integrate
 
 o = np.float(0.3)
 z = np.arange(0., 5., 0.2)
-y = 4285.71438*(2.0*(2.0 - o * (1.0 - z) - (2.0 - o) * (1.0 + o * z)**(1.0/2.0)) / ((o**2.0) * (1.0 + z)))
+y = (2.0*(2.0 - o * (1.0 - z) - (2.0 - o) * (1.0 + o * z)**(1.0/2.0)) / ((o**2.0) * (1.0 + z)))
 dl = [np.float(x) for x in y]
 print(dl)
 plt.plot(z, dl)
