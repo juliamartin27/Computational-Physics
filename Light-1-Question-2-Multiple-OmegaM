@@ -6,19 +6,19 @@ def H(z, omega_m, H_0=70):
     return H_0 * wurzel
 
 def H_inv(z, omega_m, H_0=70):
-    return 1 / (H(z, omega_m, H_0=70))
+    return 1 / (H(z, omega_m, H_0=H_0))
 
 def integral(z, omega_m, H_0=70):
     I = integrate.quad(H_inv, 0, z, args=(omega_m,))[0]
     return I
 
-def d_L(z, omega_m, H_0=70):
-    distance = (3.0 * (10**8)) * (1 + z) * integral(z, omega_m, H_0)
+def d_L(z, omega_m, H_0=70, cspeed=(2.99792 * (10**8))):
+    distance = cspeed * (1 + z) * integral(z, omega_m, H_0)
     return distance
 
-z_initial = -1.8
+z_initial = 0
 z_final = 10
-zs = np.linspace(z0, zf, 1000)
+zs = np.linspace(z_initial, z_final, 1000)
 
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(16,9))
 
@@ -28,4 +28,6 @@ for omega_m in np.linspace(0, 1, 10):
         d_Ls[index] = d_L(zs[index], omega_m=omega_m)
     ax.plot(zs, d_Ls, label='$\Omega$ = {:.2f}'.format(omega_m))
 ax.legend(loc='best')
+plt.xlabel('z')
+plt.ylabel('D$_L$ (c/H$_0$)')
 plt.show()
