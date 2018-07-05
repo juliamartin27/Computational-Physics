@@ -1,0 +1,41 @@
+%matplotlib inline
+import numpy as np
+import scipy as sp
+import matplotlib.pyplot as plt
+import scipy.integrate as integrate
+
+def H(z, omega_m, omega_k, H_0=70):
+    omega_lambda = 1 - omega_m - omega_k
+    z_prime1 = ((1 + z) ** 3)
+    z_prime2 = ((1 + z) ** 2)
+    wurzel = np.sqrt(omega_m * z_prime1 + omega_k * z_prime2 + omega_lambda)
+    
+    return H_0 * wurzel
+
+def H_inv(z, omega_m, omega_k, H_0=70):
+    return 1 / (H(z, omega_m, omega_k, H_0=H_0))
+
+def integral(z, omega_m, omega_k, H_0=70):
+    I = integrate.quad(H_inv, 0, z, args=(omega_m, omega_k, H_0))[0]
+    return I
+
+def d_L(z, omega_m, omega_k, H_0=70, cspeed=(2.99792 * (10**5))):
+    distance = cspeed * (1 + z) * integral(z, omega_m, omega_k, H_0)
+    return distance
+
+z_initial = 0
+z_final = 10
+zs = np.linspace(z_initial, z_final, 1000)
+
+fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(16,9))
+
+for omega_m in np.linspace(0, 1, 10):
+    for omega_k in np.linspace(0, 1 - omega_m, 10):
+        d_Ls = np.linspace(z_initial, z_final, 1000)
+        for index in range(zs.size):
+            d_Ls[index] = d_L(zs[index], omega_m=omega_m, omega_k=omega_k)
+        ax.plot(zs, d_Ls, label='$\Omega$$_m$ = {:.2f}, $\Omega$$_k$ = {:.2f}'.format(omega_m, omega_k))
+ax.legend(loc='best')
+plt.xlabel('z')
+plt.ylabel('D$_L$ (Mpc)')
+plt.show()
